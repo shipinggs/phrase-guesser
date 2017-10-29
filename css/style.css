@@ -1,0 +1,117 @@
+.top-buffer {
+    margin-top: 50px;
+}
+
+body {
+    text-align:center;
+    font-size:18px;
+    background: url('/img/ecb.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+h1, h2, h3 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+    margin:5px 0;
+}
+
+h1 {
+	font-size: 2.6em;
+}
+
+h2 {
+	font-size: 1.6em;
+}
+
+p{
+  font-size: 1.6em;
+}
+
+.row h1,
+.row h2,
+.row h3,
+.row h4,
+.row h5,
+.row p,
+.row li {
+  color: #EFEFEF;
+}
+
+#points {
+  color: #00DD00;
+}
+
+.alphabets {
+  margin: 0px auto;
+  padding:0;
+}
+
+.alphabets li {
+  display: inline-block;
+  margin: 0 10px 10px 0;
+  list-style:none;
+  min-width: 54px;
+  min-height: 54px;
+  padding: 10px;
+  background: #00695C;
+  color: white;
+  cursor:pointer;
+  border: solid 1px #545454;
+  border-radius: 4px;
+  font-size: 1.3em;
+  text-transform: uppercase;
+
+}
+
+#letter:hover {
+  background:#E91E63;
+  border: solid 1px white;
+  color:white;
+}
+
+#my-phrase {
+  margin: 0;
+  display: block;
+  padding: 0;
+  display:block;
+  text-transform: uppercase;
+}
+
+#my-phrase li {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  display: inline-block;
+  padding: 0 6px;
+  font-size:1.6em;
+}
+
+#letter.pressed {
+  color: #aaa;
+  background: #111;
+  cursor:default;
+}
+
+
+button#reset,
+button#solve,
+button#next {
+  background: #CCC;
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  text-decoration:none;
+  cursor:pointer;
+  font-size: 1.2em;
+  padding:14px 10px;
+  width:180px;
+  margin: 10px;
+  text-transform: uppercase;
+}
+
+button#reset:hover,
+button#solve:hover,
+button#next:hover {
+  background: red;
+  color: #FFF;
+}
