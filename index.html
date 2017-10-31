@@ -10,7 +10,7 @@
     <div class="container">
       <div class="row top-buffer title-row">
         <div class="col-sm-12">
-          <h1>MARIO QUIZ</h1>
+          <h1>MARIO FIIM OF FORTUNE</h1>
           <img src="/img/mario.png" style="width:120px;margin-bottom:10px" alt="">
           <h5>Stand to win some tantalising Royce!</h5>
         </div>
@@ -23,7 +23,7 @@
         <h3 id="question"></h3>
       </div>
       <div class="col-sm-10 offset-sm-1 top-buffer">
-        <div id="hold">
+        <div id="answer-wrapper">
         </div>
       </div>
     </div>
@@ -44,178 +44,236 @@
       </div>
     </div>
 
-  </body>
-  <script type="text/javascript">
-  window.onload = function () {
+    <audio id="coin" src="/sounds/coin.wav"></audio>
+    <audio id="bump" src="/sounds/bump.wav"></audio>
 
-    var alphabets = [['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
-                    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
-                    ['z', 'x', 'c', 'v', 'b', 'n', 'm']];
+    <script type="text/javascript">
+    window.onload = function () {
+
+      var playSound = function (sound) {
+          var audio = document.getElementById(sound);
+          if (audio.paused) {
+              audio.play();
+          } else {
+              audio.currentTime = 0
+          }
+      }
 
 
-    var questions = ["What did Mario Draghi roll out in 2015?",
-                  "What is the ECB's amount of bond purchase per month in 2017?"]
-    var answers = ["Quantitative easing", "sixty billion euros"];
+      var alphabets = [['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+                      ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+                      ['z', 'x', 'c', 'v', 'b', 'n', 'm']];
 
-    var categories;         // Array of topics
-    var chosenCategory;     // Selected catagory
-    var phrase;              // Selected phrase
-    var guess;             // Guess
-    var guesses = [ ];      // Stored guesses
-    var counter;           // Count correct guesses
-    var space;              // Number of spaces in phrase '-'
-    var round = 0;
 
-    // create alphabets ul
-    var keyboard = function () {
-      myButtonsWrapper = document.getElementById('keyboard-wrapper');
-      myButtons = document.createElement('div');
-      myButtons.id = "keyboard";
-      myButtonsWrapper.append(myButtons);
-      for (var i = 0; i < alphabets.length; i++) {
-        letters = document.createElement('ul');
-        letters.setAttribute('class', 'alphabets');
-        myButtons.appendChild(letters);
-        for (var j = 0; j < alphabets[i].length; j++) {
-          list = document.createElement('li');
-          list.id = 'letter';
-          list.innerHTML = alphabets[i][j];
-          check();
-          letters.appendChild(list);
+      var questions = [
+        "Influential people.",
+        "What did Mario Draghi roll out in March 2015?",
+        "What is something the Euro Zone experienced that the US did not?",
+        "What will be the ECB's amount of bond purchase per month starting January 2018?",
+        "What will happen to the matured debt of the ECB?",
+        "What is the estimated remaining capacity of the Asset Purchase Programme for 2018?",
+        "Common criticisms of QE:"
+      ];
+
+      var answers = [
+        "Karen Gan and Ow Jun Ming",
+        "Quantitative easing",
+        "European sovereign debt crisis",
+        "Thirty billion euros",
+        "Reinvested within two months",
+        "Slightly more than two hundred billion euros",
+        "Artificially props up the market and widens wealth inequality"
+      ];
+
+      var categories;         // Array of topics
+      var chosenCategory;     // Selected catagory
+      var phrase;              // Selected phrase
+      var guess;             // Guess
+      var guesses = [ ];      // Stored guesses
+      var counter;           // Count correct guesses
+      var space;              // Number of spaces in phrase '-'
+      var round = 0;
+
+      // create alphabets ul
+      var keyboard = function () {
+        myButtonsWrapper = document.getElementById('keyboard-wrapper');
+        myButtons = document.createElement('div');
+        myButtons.id = "keyboard";
+        myButtonsWrapper.append(myButtons);
+        for (var i = 0; i < alphabets.length; i++) {
+          letters = document.createElement('ul');
+          letters.setAttribute('class', 'alphabets');
+          myButtons.appendChild(letters);
+          for (var j = 0; j < alphabets[i].length; j++) {
+            list = document.createElement('li');
+            list.id = 'letter';
+            list.innerHTML = alphabets[i][j];
+            check();
+            letters.appendChild(list);
+          }
         }
       }
-    }
 
 
-    // Display question
-    var showQuestion = function () {
-      myQuestion = document.getElementById('question');
-      if (round < questions.length) {
-        myQuestion.innerHTML = "Question " + (round+1) + ": " + questions[round];
-      } else {
-        myQuestion.innerHTML = "The End";
-      }
-
-    }
-
-    // Create guesses ul
-     result = function () {
-      phraseHolder = document.getElementById('hold');
-      correct = document.createElement('ul');
-
-      for (var i = 0; i < phrase.length; i++) {
-        correct.setAttribute('id', 'my-phrase');
-        guess = document.createElement('li');
-        guess.setAttribute('class', 'guess');
-        if (phrase[i] === " ") {
-          guess.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-          space = 1;
+      // Display question
+      var showQuestion = function () {
+        myQuestion = document.getElementById('question');
+        if (round < questions.length) {
+          myQuestion.innerHTML = "Question " + (round) + ": " + questions[round];
         } else {
-          guess.innerHTML = "_";
+          myQuestion.innerHTML = "Now for some discussion questions!";
         }
 
-        guesses.push(guess);
-        phraseHolder.appendChild(correct);
-        correct.appendChild(guess);
       }
-    }
 
-    // OnClick Function
-     check = function () {
-      var turnCount = 0;
-      var pointsDisplay = document.getElementById('points');
-      list.onclick = function () {
-        var guess = (this.innerHTML);
-        this.setAttribute("class", "pressed");
-        this.onclick = null;
+      // Create blanks
+       result = function () {
+        myAnswerWrapper = document.getElementById('answer-wrapper');
+        myAnswer = document.createElement('div');
+        myAnswer.id = "answer";
+        myAnswerWrapper.append(myAnswer);
+
+        var words = 0;
+
+        // create ul
+        correct = document.createElement('ul');
+        correct.setAttribute('id', 'my-phrase');
+        // append ul to myAnswer
+        myAnswer.appendChild(correct);
+
+        // for each character in the answer
         for (var i = 0; i < phrase.length; i++) {
-          if (phrase[i] === guess) {
-            guesses[i].innerHTML = guess;
+          // create li
+          guess = document.createElement('li');
+          guess.setAttribute('class', 'guess');
+          correct.appendChild(guess);
+          guesses.push(guess);
+
+          // if answer's character is a space
+          if (phrase[i] === " ") {
+            guess.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+            space = 1;
+            words += 1;
+          // if not space, put "_"
+          } else {
+            guess.innerHTML = "_";
+          }
+
+          // for every 3 words, create a new ul for line break
+          if (phrase[i] === " " && words === 3) {
+            // create ul
+            correct = document.createElement('ul');
+            correct.setAttribute('id', 'my-phrase');
+            // append ul to myAnswer
+            myAnswer.appendChild(correct);
+            words = 0;
+          }
+
+        }
+      }
+
+      // OnClick Function
+       check = function () {
+        var turnCount = 0;
+        var pointsDisplay = document.getElementById('points');
+        list.onclick = function () {
+          var guess = (this.innerHTML);
+          this.setAttribute("class", "pressed");
+          this.onclick = null;
+          for (var i = 0; i < phrase.length; i++) {
+            if (phrase[i] === guess) {
+              guesses[i].innerHTML = guess;
+              counter += 1;
+              turnCount += 1;
+            }
+          }
+          var j = (phrase.indexOf(guess));
+          if (j === -1) {
+            pointsDisplay.innerHTML = "The answer does not have this letter."
+            pointsDisplay.style.color = "#F44336";
+            playSound("bump");
+          } else {
+            pointsDisplay.innerHTML = "You got " + turnCount + " correct!"
+            pointsDisplay.style.color = "#00DD00";
+            playSound("coin");
+          }
+        }
+      }
+
+
+      // Play
+      play = function () {
+        var pointsDisplay = document.getElementById('points');
+        pointsDisplay.innerHTML = "&nbsp;";
+
+        nextButton = document.getElementById('next');
+        solveButton = document.getElementById('solve');
+
+        if (round < questions.length) {
+          phrase = answers[round].toLowerCase();
+          phrase = phrase.replace(/\s/g, " ");
+          console.log(phrase);
+          solveButton.style.display = "inline-block";
+          nextButton.style.display = "inline-block"
+
+        } else {
+          nextButton.style.display = "none";
+          solveButton.style.display = "none";
+          phrase = " ";
+        }
+
+        guesses = [ ];
+        counter = 0;
+        space = 0;
+        result();
+        keyboard();
+        showQuestion();
+      }
+
+      play();
+
+       // Reset
+      document.getElementById('reset').onclick = function() {
+        myAnswer = document.getElementById('answer');
+        myAnswer.parentNode.removeChild(myAnswer);
+        myButtons = document.getElementById('keyboard')
+        myButtons.parentNode.removeChild(myButtons);
+        round = 0;
+        play();
+      }
+
+      // Solve
+      document.getElementById('solve').onclick = function() {
+        var turnCount = 0;
+        var pointsDisplay = document.getElementById('points');
+        for (var i = 0; i < phrase.length; i++) {
+          if (guesses[i].innerHTML === "_") {
+            guesses[i].innerHTML = phrase[i]
             counter += 1;
             turnCount += 1;
           }
         }
-        var j = (phrase.indexOf(guess));
-        if (j === -1) {
-          pointsDisplay.innerHTML = "The answer does not have this letter."
-          pointsDisplay.style.color = "#F44336";
-        } else {
-          pointsDisplay.innerHTML = "You got " + turnCount + " correct!"
-          pointsDisplay.style.color = "#00DD00";
-        }
-      }
-    }
-
-
-    // Play
-    play = function () {
-      var pointsDisplay = document.getElementById('points');
-      pointsDisplay.innerHTML = "&nbsp;";
-
-      nextButton = document.getElementById('next');
-      solveButton = document.getElementById('solve');
-
-      if (round < questions.length) {
-        phrase = answers[round].toLowerCase();
-        phrase = phrase.replace(/\s/g, " ");
-        console.log(phrase);
-        solveButton.style.display = "inline-block";
-        nextButton.style.display = "inline-block"
-
-      } else {
-        nextButton.style.display = "none";
-        solveButton.style.display = "none";
-        phrase = " ";
+        pointsDisplay.innerHTML = "You got " + turnCount + " correct!"
+        pointsDisplay.style.color = "#00DD00";
+        playSound("coin");
       }
 
-      guesses = [ ];
-      counter = 0;
-      space = 0;
-      result();
-      keyboard();
-      showQuestion();
-    }
-
-    play();
-
-     // Reset
-    document.getElementById('reset').onclick = function() {
-      correct.parentNode.removeChild(correct);
-      myButtons = document.getElementById('keyboard')
-      myButtons.parentNode.removeChild(myButtons);
-      round = 0;
-      play();
-    }
-
-    // Solve
-    document.getElementById('solve').onclick = function() {
-      var turnCount = 0;
-      var pointsDisplay = document.getElementById('points');
-      for (var i = 0; i < phrase.length; i++) {
-        if (guesses[i].innerHTML === "_") {
-          guesses[i].innerHTML = phrase[i]
-          counter += 1;
-          turnCount += 1;
-        }
+      // Next
+      document.getElementById('next').onclick = function() {
+        myAnswer = document.getElementById('answer');
+        myAnswer.parentNode.removeChild(myAnswer);
+        myButtons = document.getElementById('keyboard')
+        myButtons.parentNode.removeChild(myButtons);
+        round += 1;
+        play();
       }
-      pointsDisplay.innerHTML = "You got " + turnCount + " correct!"
-      pointsDisplay.style.color = "#00DD00";
 
     }
 
 
-    // Next
-    document.getElementById('next').onclick = function() {
-      correct.parentNode.removeChild(correct);
-      myButtons = document.getElementById('keyboard')
-      myButtons.parentNode.removeChild(myButtons);
-      round += 1;
-      play();
-    }
 
-  }
+    </script>
 
+  </body>
 
-
-  </script>
 </html>
